@@ -1,0 +1,33 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100" style="width: 250px;">
+    <a href="{% url 'catalog:home' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <span class="fs-4">Меню</span>
+    </a>
+
+    <hr>
+
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item mb-2">
+            <a href="{% url 'catalog:home' %}" class="nav-link text-white">
+                Главная
+            </a>
+        </li>
+        <li class="mb-2">
+            <a href="{% url 'catalog:product_create' %}" class="nav-link text-white">
+                Добавить товар
+            </a>
+        </li>
+        <li class="mb-2">
+            <a href="{% url 'catalog:contacts' %}" class="nav-link text-white">
+                Контакты
+            </a>
+        </li>
+    </ul>
+
+    <hr>
+
+    <div class="border rounded p-3 bg-secondary bg-opacity-10">
+        <div class="small text-white mb-2">Профиль</div>
+        <div class="small text-white mb-2">Выход</div>
+        <div class="small fw-semibold text-white">Пользователь &gt;</div>
+    </div>
+</div>
