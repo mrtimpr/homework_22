@@ -1,56 +1,79 @@
 {% extends 'catalog/base.html' %}
 
 {% block title %}Контакты{% endblock %}
-{% block page_title %}Контакты{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <div class="col-12 col-lg-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h4 class="card-title mb-3">Свяжитесь с нами</python manage.py makemigrationsh4>
-
-                {% if success_message %}
-                <div class="alert alert-success" role="alert">
-                    {{ success_message }}
-                </div>
-                {% endif %}
-
-                <form method="post">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Имя</label>
-                        <input type="text" name="name" id="name" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Телефон</label>
-                        <input type="text" name="phone" id="phone" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Сообщение</label>
-                        <textarea name="message" id="message" rows="4" class="form-control" required></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Отправить</button>
-                </form>
-            </div>
-        </div>
+<div class="container-fluid">
+    <div class="text-center mb-5">
+        <h1 class="display-5">Контакты</h1>
     </div>
 
-    <div class="col-12 col-lg-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h4 class="card-title mb-3">Наши контакты</h4>
-                <p class="text-muted">
-                    Здесь можно разместить адрес, телефон, электронную почту и другую контактную информацию компании.
-                </p>
-                <p class="text-muted mb-0">
-                    Этот блок остается информационным и не влияет на работу формы обратной связи.
-                </p>
+    <div class="row justify-content-center align-items-start g-5">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card">
+                <div class="card-body p-4">
+                    {% if success_message %}
+                    <div class="alert alert-success" role="alert">
+                        {{ success_message }}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Имя</label>
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                id="name"
+                                placeholder="Ваше имя"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Контактный телефон</label>
+                            <input
+                                type="text"
+                                name="phone"
+                                class="form-control"
+                                id="phone"
+                                placeholder="Контактный телефон"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Сообщение</label>
+                            <textarea
+                                name="message"
+                                class="form-control"
+                                id="message"
+                                rows="4"
+                                placeholder="Ваше сообщение"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4">Отправить</button>
+                    </form>
+                </div>
             </div>
+        </div>
+
+        <div class="col-xl-12 col-lg-12">
+            <h3 class="h4 mb-3">Наши контакты</h3>
+            <p class="text-muted">
+                Страна	Россия
+            </p>
+            <p class="text-muted">
+                ИНН	91-1144442
+            </p>
+            <p class="text-muted">
+                Адрес	Россия, Москва,98052-6399
+            </p>
         </div>
     </div>
 </div>
