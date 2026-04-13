@@ -8,7 +8,7 @@
     <div class="col-12 col-lg-5">
         <div class="card shadow-sm">
             {% if product.image %}
-            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            <img src="{{ product.image.url }}" class="card-img-top img-fluid" alt="{{ product.name }}">
             {% else %}
             <div class="card-body text-center text-muted py-5">
                 Изображение отсутствует
@@ -21,30 +21,12 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <h2 class="h3 mb-3">{{ product.name }}</h2>
+                <p class="text-muted mb-4">{{ product.description }}</p>
 
-                <p class="text-muted mb-4">
-                    {{ product.description }}
-                </p>
-
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-semibold">Категория</div>
-                    <div class="col-sm-8">{{ product.category.name }}</div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-semibold">Цена</div>
-                    <div class="col-sm-8">{{ product.price }} ₽</div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-semibold">Дата создания</div>
-                    <div class="col-sm-8">{{ product.created_at|date:"d.m.Y H:i" }}</div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-sm-4 fw-semibold">Последнее изменение</div>
-                    <div class="col-sm-8">{{ product.updated_at|date:"d.m.Y H:i" }}</div>
-                </div>
+                <p><strong>Категория:</strong> {{ product.category.name }}</p>
+                <p><strong>Цена:</strong> {{ product.price }} ₽</p>
+                <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
+                <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
 
                 <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">
                     Назад к списку
