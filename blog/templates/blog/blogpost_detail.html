@@ -1,0 +1,26 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block page_title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    {% if post.preview %}
+    <img src="{{ post.preview.url }}" class="card-img-top" alt="{{ post.title }}" style="max-height: 420px; object-fit: cover;">
+    {% endif %}
+    <div class="card-body">
+        <p class="text-muted">
+            {{ post.created_at|date:"d.m.Y H:i" }} · Просмотры: {{ post.views_count }}
+        </p>
+        <div class="mb-4">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'blog:post_update' post.pk %}" class="btn btn-primary">Редактировать</a>
+            <a href="{% url 'blog:post_delete' post.pk %}" class="btn btn-outline-danger">Удалить</a>
+            <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary">Назад к списку</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
