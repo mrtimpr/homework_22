@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import DetailView, TemplateView, View
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
 from django.views.generic.list import ListView
 
 from .forms import ProductForm
@@ -65,5 +66,19 @@ class ProductCreateView(View):
         return self.render_form(form)
 
     def render_form(self, form):
-        from django.shortcuts import render
         return render(self.request, self.template_name, {'form': form})
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:product_detail', kwargs={'pk': self.object.pk})
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'catalog/product_confirm_delete.html'
+    success_url = reverse_lazy('catalog:home')
