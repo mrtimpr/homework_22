@@ -28,9 +28,17 @@
                 <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
                 <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
 
-                <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">
-                    Назад к списку
-                </a>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-primary">
+                        Редактировать
+                    </a>
+                    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">
+                        Удалить
+                    </a>
+                    <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">
+                        Назад к списку
+                    </a>
+                </div>
             </div>
         </div>
     </div>
