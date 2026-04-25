@@ -36,8 +36,26 @@
     <hr>
 
     <div class="border rounded p-3 bg-secondary bg-opacity-10">
-        <div class="small text-white mb-2">Профиль</div>
-        <div class="small text-white mb-2">Выход</div>
-        <div class="small fw-semibold text-white">Пользователь &gt;</div>
+        {% if user.is_authenticated %}
+            <a href="{% url 'users:profile' %}" class="d-block small text-white mb-2 text-decoration-none">
+                Профиль
+            </a>
+
+            <form method="post" action="{% url 'users:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link p-0 small text-white text-decoration-none mb-2">
+                    Выход
+                </button>
+            </form>
+
+            <div class="small fw-semibold text-white">{{ user.email }}</div>
+        {% else %}
+            <a href="{% url 'users:login' %}" class="d-block small text-white mb-2 text-decoration-none">
+                Вход
+            </a>
+            <a href="{% url 'users:register' %}" class="d-block small text-white text-decoration-none">
+                Регистрация
+            </a>
+        {% endif %}
     </div>
 </div>
