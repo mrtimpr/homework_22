@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100" style="width: 250px;">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark vh-100">
     <a href="{% url 'catalog:home' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span class="fs-4">Меню</span>
     </a>
@@ -43,7 +43,7 @@
 
             <form method="post" action="{% url 'users:logout' %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-link p-0 small text-white text-decoration-none mb-2">
+                <button type="submit" class="btn btn-link small text-decoration-none mb-2" style="color: dark !important;">
                     Выход
                 </button>
             </form>
