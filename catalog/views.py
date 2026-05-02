@@ -54,12 +54,13 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class OwnerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+class OwnerOrModeratorUpdateRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     raise_exception = True
 
     def test_func(self):
         product = self.get_object()
-        return product.owner == self.request.user
+        user = self.request.user
+        return product.owner == user or user.has_perm('catalog.delete_product')
 
 
 class OwnerOrDeletePermissionRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -71,7 +72,7 @@ class OwnerOrDeletePermissionRequiredMixin(LoginRequiredMixin, UserPassesTestMix
         return product.owner == user or user.has_perm('catalog.delete_product')
 
 
-class ProductUpdateView(OwnerRequiredMixin, UpdateView):
+class ProductUpdateView(OwnerOrModeratorUpdateRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
