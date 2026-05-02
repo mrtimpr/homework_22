@@ -72,7 +72,7 @@ class OwnerOrDeletePermissionRequiredMixin(LoginRequiredMixin, UserPassesTestMix
         return product.owner == user or user.has_perm('catalog.delete_product')
 
 
-class ProductUpdateView(OwnerOrModeratorUpdateRequiredMixin, UpdateView):
+class ProductUpdateView(OwnerRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
