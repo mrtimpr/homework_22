@@ -1,11 +1,10 @@
-from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import EmailAuthenticationForm, CustomUserCreationForm, UserProfileForm
+from .letters import send_welcome_email
 from .models import User
 
 
@@ -17,16 +16,7 @@ class UserRegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        try:
-            send_mail(
-                subject='Добро пожаловать!',
-                message='Спасибо за регистрацию в сервисе.',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.object.email],
-                fail_silently=False,
-            )
-        except Exception:
-            pass
+        send_welcome_email(email=self.object.email)
         return response
 
 

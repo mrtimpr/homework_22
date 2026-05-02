@@ -5,22 +5,32 @@ from .models import User
 
 
 class StyledMixin:
-    def apply_bootstrap(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_bootstrap_classes()
+
+    def _apply_bootstrap_classes(self) -> None:
         for field in self.fields.values():
-            if isinstance(field.widget, (forms.TextInput, forms.EmailInput, forms.PasswordInput, forms.ClearableFileInput)):
+            if isinstance(
+                field.widget,
+                (
+                    forms.TextInput,
+                    forms.EmailInput,
+                    forms.PasswordInput,
+                    forms.ClearableFileInput,
+                ),
+            ):
                 field.widget.attrs['class'] = 'form-control'
             elif isinstance(field.widget, forms.Select):
                 field.widget.attrs['class'] = 'form-select'
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs['class'] = 'form-control'
 
 
-class CustomUserCreationForm(UserCreationForm, StyledMixin):
+class CustomUserCreationForm(StyledMixin, UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('email',)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.apply_bootstrap()
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -29,19 +39,11 @@ class CustomUserChangeForm(UserChangeForm):
         fields = '__all__'
 
 
-class EmailAuthenticationForm(AuthenticationForm, StyledMixin):
+class EmailAuthenticationForm(StyledMixin, AuthenticationForm):
     username = forms.EmailField(label='Email')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.apply_bootstrap()
 
-
-class UserProfileForm(forms.ModelForm, StyledMixin):
+class UserProfileForm(StyledMixin, forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'avatar', 'phone', 'country')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.apply_bootstrap()
