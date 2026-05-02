@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.db.models import F
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
@@ -22,6 +23,7 @@ class BlogPostDetailView(DetailView):
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
+
         BlogPost.objects.filter(pk=obj.pk).update(views_count=F('views_count') + 1)
         obj.refresh_from_db(fields=['views_count'])
 
@@ -40,25 +42,31 @@ class BlogPostDetailView(DetailView):
         return obj
 
 
-class BlogPostCreateView(CreateView):
+class BlogPostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = BlogPost
     fields = ['title', 'content', 'preview', 'is_published']
     template_name = 'blog/blogpost_form.html'
+    permission_required = 'blog.add_blogpost'
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('blog:post_detail', args=[self.object.pk])
 
 
-class BlogPostUpdateView(UpdateView):
+class BlogPostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = BlogPost
     fields = ['title', 'content', 'preview', 'is_published']
     template_name = 'blog/blogpost_form.html'
+    permission_required = 'blog.change_blogpost'
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('blog:post_detail', args=[self.object.pk])
 
 
-class BlogPostDeleteView(DeleteView):
+class BlogPostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = BlogPost
     template_name = 'blog/blogpost_confirm_delete.html'
+    permission_required = 'blog.delete_blogpost'
+    raise_exception = True
     success_url = reverse_lazy('blog:post_list')

@@ -21,6 +21,11 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <h2 class="h3 mb-3">{{ product.name }}</h2>
+                    {% if product.is_published %}
+                        <span class="badge text-bg-success">Опубликован</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary">Не опубликован</span>
+                    {% endif %}
                 <p class="text-muted mb-4">{{ product.description }}</p>
 
                 <p><strong>Категория:</strong> {{ product.category.name }}</p>
@@ -29,15 +34,26 @@
                 <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
 
                 <div class="d-flex gap-2">
-                    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-primary">
-                        Редактировать
-                    </a>
-                    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">
-                        Удалить
-                    </a>
-                    <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">
-                        Назад к списку
-                    </a>
+                    {% if user == product.owner %}
+                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-outline-primary">
+                            Редактировать
+                        </a>
+                    {% endif %}
+
+                    {% if user == product.owner or perms.catalog.delete_product %}
+                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-outline-danger">
+                            Удалить
+                        </a>
+                    {% endif %}
+
+                    {% if perms.catalog.can_unpublish_product and product.is_published %}
+                        <form method="post" action="{% url 'catalog:product_unpublish' product.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning">
+                                Снять с публикации
+                            </button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
