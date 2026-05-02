@@ -54,7 +54,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class OwnerOrModeratorUpdateRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+class OwnerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     raise_exception = True
 
     def test_func(self):
