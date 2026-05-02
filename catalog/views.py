@@ -1,7 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
+from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 from django.views.generic.list import ListView
 
 from .forms import ProductForm
@@ -21,7 +21,6 @@ class HomeListView(ListView):
         paginator = Paginator(self.get_queryset(), 6)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-
         context['page_obj'] = page_obj
         context['products'] = page_obj.object_list
         return context
@@ -32,44 +31,24 @@ class ContactsTemplateView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        message = request.POST.get('message')
-
-        print('Имя:', name)
-        print('Телефон:', phone)
-        print('Сообщение:', message)
-
         context['success_message'] = 'Сообщение успешно отправлено!'
         return self.render_to_response(context)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
 
-class ProductCreateView(View):
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    model = Product
+    form_class = ProductForm
     template_name = 'catalog/product_form.html'
-
-    def get(self, request, *args, **kwargs):
-        form = ProductForm()
-        return self.render_form(form)
-
-    def post(self, request, *args, **kwargs):
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('catalog:home')
-        return self.render_form(form)
-
-    def render_form(self, form):
-        return render(self.request, self.template_name, {'form': form})
+    success_url = reverse_lazy('catalog:home')
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
@@ -78,7 +57,7 @@ class ProductUpdateView(UpdateView):
         return reverse_lazy('catalog:product_detail', kwargs={'pk': self.object.pk})
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
