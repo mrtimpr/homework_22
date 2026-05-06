@@ -12,12 +12,20 @@ class CustomUserAdmin(UserAdmin):
     model = User
 
     list_display = ('id', 'email', 'first_name', 'last_name', 'phone', 'country', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     ordering = ('id',)
+    search_fields = ('email', 'first_name', 'last_name', 'phone', 'country')
 
-    fieldsets = UserAdmin.fieldsets + (
-        ('Дополнительно', {'fields': ('avatar', 'phone', 'country')}),
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        ('Персональная информация', {'fields': ('first_name', 'last_name', 'avatar', 'phone', 'country')}),
+        ('Права доступа', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Важные даты', {'fields': ('last_login', 'date_joined')}),
     )
 
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('email', 'avatar', 'phone', 'country')}),
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active'),
+        }),
     )

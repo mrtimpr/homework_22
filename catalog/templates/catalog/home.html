@@ -28,7 +28,11 @@
 
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ product.name }}</h5>
-
+                    {% if product.is_published %}
+                        <span class="badge text-bg-success">Опубликован</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary">Не опубликован</span>
+                    {% endif %}
                 <p class="card-text text-muted">
                     {{ product.description|truncatechars:100 }}
                 </p>

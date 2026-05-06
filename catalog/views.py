@@ -1,6 +1,8 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 from django.views.generic.list import ListView
 
@@ -14,7 +16,7 @@ class HomeListView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.select_related('category').order_by('-created_at')
+        return Product.objects.select_related('category', 'owner').order_by('-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -47,8 +49,30 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+
+class OwnerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        product = self.get_object()
+        user = self.request.user
+        return product.owner == user or user.has_perm('catalog.delete_product')
+
+
+class OwnerOrDeletePermissionRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        product = self.get_object()
+        user = self.request.user
+        return product.owner == user or user.has_perm('catalog.delete_product')
+
+
+class ProductUpdateView(OwnerOrDeletePermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
@@ -57,7 +81,19 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('catalog:product_detail', kwargs={'pk': self.object.pk})
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(OwnerOrDeletePermissionRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
+
+
+class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'catalog.can_unpublish_product'
+    raise_exception = True
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if product.is_published:
+            product.is_published = False
+            product.save(update_fields=['is_published'])
+        return redirect('catalog:product_detail', pk=pk)
