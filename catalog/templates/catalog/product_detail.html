@@ -28,7 +28,12 @@
                     {% endif %}
                 <p class="text-muted mb-4">{{ product.description }}</p>
 
-                <p><strong>Категория:</strong> {{ product.category.name }}</p>
+                <p>
+                    <strong>Категория:</strong>
+                    <a href="{% url 'catalog:category_products' product.category.pk %}">
+                        {{ product.category.name }}
+                    </a>
+                </p>
                 <p><strong>Цена:</strong> {{ product.price }} ₽</p>
                 <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
                 <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
