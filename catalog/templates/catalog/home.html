@@ -38,7 +38,10 @@
                 </p>
 
                 <p class="mb-2">
-                    <span class="fw-semibold">Категория:</span> {{ product.category.name }}
+                    <span class="fw-semibold">Категория:</span>
+                    <a href="{% url 'catalog:category_products' product.category.pk %}">
+                        {{ product.category.name }}
+                    </a>
                 </p>
 
                 <p class="fs-5 fw-bold mb-3">{{ product.price }} ₽</p>
